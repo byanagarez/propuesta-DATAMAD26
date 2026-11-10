@@ -8,7 +8,7 @@
 
 *Una propuesta para transformar datos abiertos de la Comunidad de Madrid en decisiones residenciales comprensibles, adaptadas y justificadas.*
 
-![Portada conceptual del proyecto](assets/portada-datamad.png)
+![Portada conceptual del proyecto](assets/portada-datamad1.png)
 
 **Estado:** propuesta de proyecto · **Ámbito:** Comunidad de Madrid · **Formato previsto:** aplicación web interactiva
 
@@ -45,6 +45,8 @@ flowchart LR
 | Preferencia por calidad ambiental | Indicadores ambientales con fecha y cobertura |
 | Necesidades de movilidad reducida (opcional) | Indicadores de accesibilidad PMR **solo donde existan datos verificables** |
 | Interés por la seguridad de la zona (opcional) | Contexto de seguridad territorial **solo si hay datos comparables** |
+
+![Inputs del sistema a fondo](assets/portada-datamad2.png)
 
 El salario no es obligatorio. La aplicación no solicita una zona residencial de partida: **encontrarla es su propósito**.
 
@@ -99,15 +101,42 @@ flowchart TB
 
 ## Fuentes de datos previstas
 
-| Dimensión | Fuente candidata | Uso previsto |
+
+## Fuentes de datos previstas
+
+| Dimensión | Dato introducido | Fuente candidata |
 |---|---|---|
-| Transporte | [Datos abiertos CRTM](https://datos.crtm.es/) | Red, horarios GTFS, zonas tarifarias y conexiones |
-| Sanidad y educación | [Datos abiertos de la Comunidad de Madrid](https://datos.comunidad.madrid/catalogo/) | Localización y tipología de equipamientos |
-| Calidad ambiental | [Catálogo de datos de la Comunidad de Madrid](https://datos.comunidad.madrid/catalogo/) | Series y estaciones de calidad del aire |
-| Vivienda | [SERPAVI (MIVAU)](https://serpavi.mivau.gob.es/) y fuentes de alquiler reutilizables | Estimaciones de alquiler con año y metodología explícitos |
-| Cartografía y movilidad peatonal | [OpenStreetMap](https://www.openstreetmap.org/) | Red espacial y distancias, sujeto a validación |
-| Seguridad | Estadísticas oficiales **por verificar** | Indicadores contextuales solo si son comparables |
-| Accesibilidad PMR | CRTM y otras fuentes públicas **por verificar** | Cobertura de infraestructura accesible |
+| **Economía** | Presupuesto máximo de alquiler | https://www.idealista.com/sala-de-prensa/informes-precio-vivienda/venta/madrid-comunidad/madrid-provincia/madrid/ |
+| | Tamaño de vivienda deseado (m²) |  |
+| | Número de habitaciones | |
+| | Salario neto mensual (opcional) | |
+| | Prioridad entre ahorrar y reducir desplazamientos | |
+| **Movilidad** | Lugar de trabajo o estudio | |
+| | Tiempo máximo por trayecto | |
+| | Días presenciales por semana | |
+| | Medio de transporte preferido | |
+| | Disponibilidad de coche | |
+| | Hora habitual de entrada | |
+| | Tolerancia a transbordos | |
+| | Necesidades de accesibilidad para personas con movilidad reducida (PMR) | https://www.madridaccesible.com/datos |
+| **Servicios** | Importancia de tener un centro de salud cerca | |
+| | Necesidad de hospital cercano | https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_establecimientos_sanitarios?view=info |
+| | Necesidad de centros educativos | https://datos.comunidad.madrid/catalogos/#/dataset/centros_educativos?view=info |
+| | Importancia de supermercados y comercios | |
+| | Importancia de bibliotecas y centros culturales | https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_bibliotecarios_dependientes_cm_ayuntamiento_madrid?view=info |
+| | Necesidad de instalaciones deportivas | |
+| **Entorno** | Preferencia por parques y zonas verdes | |
+| | Importancia de la calidad del aire | https://datos.comunidad.madrid/catalogos/#/dataset/calidad_aire_datos_meteo_mes?view=info |
+| | Preferencia por zonas tranquilas | https://datos.comunidad.madrid/catalogos/#/dataset/SPA_28079_PLAN_ACCION_MATERIA_CONTAMINACION_ACUSTICA_2025?view=info |
+| | Importancia de la seguridad de la zona | https://datos.gob.es/es/catalogo/ea0040772-delincuencia-y-victimizacion-en-la-comunidad-de-madrid |
+| | Preferencia por entorno urbano o residencial | |
+| | Preferencia por movilidad peatonal | |
+| **Estilo de vida** | Frecuencia de actividades culturales | |
+| | Frecuencia de actividad deportiva | https://datos.comunidad.madrid/catalogos/#/dataset/actividades_fisicas_frecuentes_por_sexo_y_edad?view=info |
+| | Necesidad de desplazamientos nocturnos | https://datos.comunidad.madrid/catalogos/#/dataset/1919186?view=info |
+| | Importancia de estar cerca de una estación | https://datos.comunidad.madrid/catalogos/#/dataset/infraestructura_transporte_publico?view=info |
+| | Preferencia por servicios a poca distancia | https://datos.comunidad.madrid/catalogos/#/dataset/a7357488-d9f0-11ed-b370-34298f78123d?view=info |
+
 
 **Compromiso DATAMAD:** incorporar efectivamente al menos un conjunto de datos del **catálogo oficial de la Comunidad de Madrid**, documentando su uso y transformación. Las fuentes son candidatas y se validarán por fecha, cobertura, licencia y granularidad antes de usarlas en resultados reales.
 
