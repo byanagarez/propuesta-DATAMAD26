@@ -29,11 +29,31 @@ Elegir dónde vivir no depende únicamente del precio del alquiler. También imp
 ```mermaid
 flowchart LR
     A[Perfil y preferencias] --> B[Datos abiertos y cálculos]
-    B --> C[Restricciones y comparación]
+    B --> C[Filtros y puntuaciones]
     C --> D[Tres recomendaciones explicadas]
 ```
 
 ### Datos de entrada y resultados
+
+Cada variable alimenta una puntuación de 0 a 100 por zona. La suma ponderada de las puntuaciones ordena las zonas y da lugar a las tres recomendaciones.
+
+| Dimensión | Variables | Puntuación |
+|---|---|---|
+| Economía | Salario neto o presupuesto · Abono de transporte de la zona · Alquileres declarados en la zona | Asequibilidad |
+| Movilidad | Destino de trabajo o estudio · Tiempo máximo por trayecto · Días presenciales | Desplazamiento |
+| Servicios | Centros sanitarios y farmacias | Sanidad |
+| Servicios | Centros educativos | Educación |
+| Servicios | Bibliotecas y patrimonio cultural | Cultura |
+| Entorno | Espacios naturales protegidos | Naturaleza |
+| Entorno | Residentes por franja de edad | Edad de los vecinos |
+| Accesibilidad (opcional) | Paradas accesibles · Lugares públicos accesibles | Accesibilidad PMR |
+
+La aplicación devuelve:
+
+Tres zonas recomendadas, una por perfil, con su puntuación total y el desglose por criterio.
+El alquiler máximo asumible en cada zona, junto a una referencia histórica: «Con tu salario puedes asumir hasta X €/mes en esta zona. En 2024, la mitad de los alquileres aquí estaba entre A y B € (mediana M).»
+Minutos por trayecto, horas mensuales de transporte y coste del abono.
+Un mapa comparativo de las tres zonas.
 
 | **El usuario introduce (inputs)** | **La aplicación devuelve (outputs)** |
 |---|---|
@@ -48,28 +68,28 @@ flowchart LR
 
 ![Inputs del sistema a fondo](assets/portada-datamad2.png)
 
-El salario no es obligatorio. La aplicación no solicita una zona residencial de partida: **encontrarla es su propósito**.
+El dato económico por defecto es el salario neto mensual. A partir de él la aplicación calcula el gasto máximo asumible en alquiler y transporte (35 % del salario). Quien prefiera hacer sus propias cuentas (por ejemplo, una pareja que suma dos ingresos) puede saltar este paso e indicar directamente su presupuesto mensual.
 
 ## Experiencia de usuario prevista
 
 | Pantalla | Objetivo | Interacción principal |
 |---|---|---|
 | **1. Tu perfil** | Conocer necesidades y límites | Formulario visual, selectores y prioridades |
-| **2. Buscando tu lugar** | Mostrar el proceso de comparación | Transición animada honesta, sin simular cálculos inexistentes |
+| **2. Buscando tu lugar** | Mostrar el proceso de comparación | Transición animada mientras se calculan las zonas |
 | **3. Tus tres lugares** | Explicar recomendaciones | Tarjetas comparativas, indicadores y mapa interactivo |
 
 ```mermaid
 flowchart TB
     subgraph S1[01 · TU PERFIL]
       A1[Destino laboral]
-      A2[Presupuesto y tiempo máximo]
+      A2[Salario o presupuesto y tiempo máximo]
       A3[Días presenciales y movilidad]
       A4[Preferencias y necesidades PMR]
     end
     subgraph S2[02 · ANÁLISIS]
       B1[Filtrar zonas viables]
       B2[Calcular costes y tiempos]
-      B3[Contrastar servicios y condiciones]
+      B3[Calcular puntuaciones]
     end
     subgraph S3[03 · RESULTADOS]
       C1[Opción ahorro]
@@ -80,18 +100,36 @@ flowchart TB
     S1 --> S2 --> S3
 ```
 
-> Los nombres «ahorro», «menor desplazamiento» y «equilibrio» describen posibles perfiles de resultados, **no tres ganadores garantizados**: si los datos o las restricciones no permiten tres opciones diferentes, la interfaz lo explicará.
+> Las tres opciones son tres repartos de pesos sobre las mismas puntuaciones (ver Metodología). Si dos repartos señalan la misma zona, se muestra la siguiente mejor.
 
 ## Metodología: recomendaciones explicables
 
 1. **Integración de datos.** Unificar indicadores de vivienda, transporte y equipamientos a una unidad territorial comparable (municipio o zona, según cobertura).
-2. **Estimación comparable.** Calcular el alquiler de una vivienda de superficie de referencia, identificando año, fuente y límites de la estimación.
-3. **Movilidad personalizada.** Estimar desplazamientos hacia el destino elegido y horas mensuales según días presenciales. Los horarios planificados no equivalen a tiempos reales garantizados.
-4. **Filtros personales.** Excluir alternativas que superen el presupuesto de alquiler o el tiempo máximo declarado.
-5. **Optimización multicriterio.** Identificar alternativas no dominadas mediante una **frontera de Pareto** en gasto mensual (alquiler + transporte) y tiempo mensual de desplazamiento.
-6. **Adaptación y explicación.** Contrastar las opciones viables con las preferencias sobre servicios y entorno; seleccionar hasta tres alternativas diferenciadas mediante criterios documentados y mostrar ventajas, inconvenientes y procedencia de cada indicador.
+2. **Asequibilidad. Se calcula el alquiler máximo asumible en cada zona (gasto máximo menos el abono de transporte de esa zona) y se compara con los alquileres declarados en la zona según SERPAVI: percentil 25, mediana y percentil 75 de 2024, último año disponible. La puntuación vale 0 si el máximo asumible queda por debajo del percentil 25, 50 en la mediana y 100 a partir del percentil 75.
+3. **Desplazamiento. Tiempo de trayecto en transporte público hasta el destino indicado, a partir de los horarios GTFS del CRTM, y horas mensuales según los días presenciales. La puntuación baja de 100 a 0 a medida que el trayecto se acerca al tiempo máximo indicado.
+4. **Filtros previos. Quedan fuera las zonas que superan el tiempo máximo y aquellas cuyo alquiler máximo asumible queda por debajo del percentil 25. Los filtros se aplican antes de puntuar, para que una zona muy lejana no resulte elegida solo por ser barata.
+5. **Preferencias. Cada preferencia marcada genera su propia puntuación de 0 a 100: sanidad, educación, cultura, naturaleza y edad de los vecinos. Para los servicios se usa el número de equipamientos por habitante, convertido en posición percentil entre zonas. Para la edad, el usuario elige un perfil (jóvenes, familias, mayores) y la puntuación refleja el peso de esa franja entre los residentes.
+6. **Puntuación total y tres perfiles. La puntuación total de cada zona es la suma ponderada de sus puntuaciones. Las tres zonas recomendadas responden a tres repartos de pesos:
+   
+   | Perfil | Asequibilidad | Desplazamiento | Preferencias |
+   |---|---|---|---|
+   | Equilibrio | 35 % | 35 % | 30 % |
+   | Ahorro | 55 % | 20 % | 25 % |
+   | Menor desplazamiento | 20 % | 55 % | 25 % |
+   
+El peso de preferencias se reparte a partes iguales entre las que el usuario haya marcado. Si no marca ninguna, ese peso se reparte entre asequibilidad y desplazamiento. Los pesos son provisionales.
 
-**No asignaremos un precio arbitrario al tiempo libre.** Mostraremos por separado gasto y horas, y opcionalmente los euros ahorrados por cada hora adicional de desplazamiento entre dos alternativas.
+Los pesos expresan cuánto cuenta cada criterio en cada perfil y se muestran junto al resultado.
+   
+Ejemplo ilustrativo (cifras inventadas). Una persona marca sanidad y naturaleza. Para una zona, con el perfil «equilibrio»:
+
+| Puntuación | Valor | Peso |
+|---|---|---|
+| Asequibilidad | 72 | 35 % |
+| Desplazamiento | 58 | 35 % |
+| Sanidad | 80 | 15 % |
+| Naturaleza | 40 | 15 % |
+| **Total** | **63,5** | 100 % |
 
 ### Dos dimensiones de especial interés
 
@@ -99,7 +137,6 @@ flowchart TB
 
 **Accesibilidad para personas con movilidad reducida.** Se priorizarán datos verificables de estaciones y paradas accesibles, ascensores, itinerarios peatonales y acceso a equipamientos. Un posible indicador medirá la proporción de destinos alcanzables mediante rutas documentadas como accesibles. **La ausencia de datos no se interpretará como falta de accesibilidad**, ni se presentarán rutas como accesibles sin validación.
 
-## Fuentes de datos previstas
 
 
 ## Fuentes de datos previstas
