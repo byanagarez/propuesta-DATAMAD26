@@ -39,16 +39,6 @@ Cada variable alimenta una puntuación de 0 a 100 por zona. La suma ponderada de
 
 ![Variables y puntuaciones del sistema](assets/variables-puntuaciones.png)
 
-| Dimensión | Variables | Puntuación |
-|---|---|---|
-| Economía | Salario neto o presupuesto · Abono de transporte de la zona · Alquileres declarados en la zona | Asequibilidad |
-| Movilidad | Destino de trabajo o estudio · Tiempo máximo por trayecto · Días presenciales | Desplazamiento |
-| Servicios | Centros sanitarios y farmacias | Sanidad |
-| Servicios | Centros educativos | Educación |
-| Servicios | Bibliotecas y patrimonio cultural | Cultura |
-| Entorno | Espacios naturales protegidos | Naturaleza |
-| Entorno | Residentes por franja de edad | Edad de los vecinos |
-| Accesibilidad (opcional) | Paradas accesibles · Lugares públicos accesibles | Accesibilidad PMR |
 
 La aplicación devuelve:
 
