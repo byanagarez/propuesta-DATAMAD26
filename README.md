@@ -106,7 +106,7 @@ flowchart TB
 
 | Dimensión | Dato introducido | Fuente candidata |
 |---|---|---|
-| **Economía** | Presupuesto máximo de alquiler | https://www.idealista.com/sala-de-prensa/informes-precio-vivienda/venta/madrid-comunidad/madrid-provincia/madrid/ |
+| **Economía** | Presupuesto máximo de alquiler | https://serpavi.mivau.gob.es/ |
 | | Tamaño de vivienda deseado (m²) |  |
 | | Número de habitaciones | |
 | | Salario neto mensual (opcional) | |
