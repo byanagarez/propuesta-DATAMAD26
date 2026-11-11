@@ -37,6 +37,8 @@ flowchart LR
 
 Cada variable alimenta una puntuación de 0 a 100 por zona. La suma ponderada de las puntuaciones ordena las zonas y da lugar a las tres recomendaciones.
 
+![Variables y puntuaciones del sistema](assets/variables-puntuaciones.png)
+
 | Dimensión | Variables | Puntuación |
 |---|---|---|
 | Economía | Salario neto o presupuesto · Abono de transporte de la zona · Alquileres declarados en la zona | Asequibilidad |
@@ -55,18 +57,6 @@ El alquiler máximo asumible en cada zona, junto a una referencia histórica: «
 Minutos por trayecto, horas mensuales de transporte y coste del abono.
 Un mapa comparativo de las tres zonas.
 
-| **El usuario introduce (inputs)** | **La aplicación devuelve (outputs)** |
-|---|---|
-| Destino habitual de trabajo o estudio | Tres zonas recomendadas y explicación de cada elección |
-| Presupuesto máximo mensual de alquiler | Alquiler estimado de una vivienda comparable |
-| Tiempo máximo de desplazamiento por trayecto | Minutos por trayecto y horas mensuales de transporte |
-| Días presenciales y medio de transporte | Coste mensual estimado de transporte y gasto conjunto |
-| Preferencias: sanidad, naturaleza, educación, cultura | Accesibilidad a servicios relevantes y mapa comparativo |
-| Preferencia por calidad ambiental | Indicadores ambientales con fecha y cobertura |
-| Necesidades de movilidad reducida (opcional) | Indicadores de accesibilidad PMR **solo donde existan datos verificables** |
-| Interés por la seguridad de la zona (opcional) | Contexto de seguridad territorial **solo si hay datos comparables** |
-
-![Inputs del sistema a fondo](assets/portada-datamad2.png)
 
 El dato económico por defecto es el salario neto mensual. A partir de él la aplicación calcula el gasto máximo asumible en alquiler y transporte (35 % del salario). Quien prefiera hacer sus propias cuentas (por ejemplo, una pareja que suma dos ingresos) puede saltar este paso e indicar directamente su presupuesto mensual.
 
