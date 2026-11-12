@@ -133,41 +133,24 @@ Ejemplo ilustrativo (cifras inventadas). Una persona marca sanidad y naturaleza.
 
 
 
-## Fuentes de datos previstas
-
-| Dimensión | Dato introducido | Fuente candidata |
+| Puntuación | Fuente | Publica |
 |---|---|---|
-| **Economía** | Presupuesto máximo de alquiler | https://serpavi.mivau.gob.es/ |
-| | Tamaño de vivienda deseado (m²) |  |
-| | Número de habitaciones | |
-| | Salario neto mensual (opcional) | |
-| | Prioridad entre ahorrar y reducir desplazamientos | |
-| **Movilidad** | Lugar de trabajo o estudio | |
-| | Tiempo máximo por trayecto | |
-| | Días presenciales por semana | |
-| | Medio de transporte preferido | |
-| | Disponibilidad de coche | |
-| | Hora habitual de entrada | |
-| | Tolerancia a transbordos | |
-| | Necesidades de accesibilidad para personas con movilidad reducida (PMR) | https://www.madridaccesible.com/datos |
-| **Servicios** | Importancia de tener un centro de salud cerca | |
-| | Necesidad de hospital cercano | https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_establecimientos_sanitarios?view=info |
-| | Necesidad de centros educativos | https://datos.comunidad.madrid/catalogos/#/dataset/centros_educativos?view=info |
-| | Importancia de supermercados y comercios | |
-| | Importancia de bibliotecas y centros culturales | https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_bibliotecarios_dependientes_cm_ayuntamiento_madrid?view=info |
-| | Necesidad de instalaciones deportivas | |
-| **Entorno** | Preferencia por parques y zonas verdes | |
-| | Importancia de la calidad del aire | https://datos.comunidad.madrid/catalogos/#/dataset/calidad_aire_datos_meteo_mes?view=info |
-| | Preferencia por zonas tranquilas | https://datos.comunidad.madrid/catalogos/#/dataset/SPA_28079_PLAN_ACCION_MATERIA_CONTAMINACION_ACUSTICA_2025?view=info |
-| | Importancia de la seguridad de la zona | https://datos.gob.es/es/catalogo/ea0040772-delincuencia-y-victimizacion-en-la-comunidad-de-madrid |
-| | Preferencia por entorno urbano o residencial | |
-| | Preferencia por movilidad peatonal | |
-| **Estilo de vida** | Frecuencia de actividades culturales | |
-| | Frecuencia de actividad deportiva | https://datos.comunidad.madrid/catalogos/#/dataset/actividades_fisicas_frecuentes_por_sexo_y_edad?view=info |
-| | Necesidad de desplazamientos nocturnos | https://datos.comunidad.madrid/catalogos/#/dataset/1919186?view=info |
-| | Importancia de estar cerca de una estación | https://datos.comunidad.madrid/catalogos/#/dataset/infraestructura_transporte_publico?view=info |
-| | Preferencia por servicios a poca distancia | https://datos.comunidad.madrid/catalogos/#/dataset/a7357488-d9f0-11ed-b370-34298f78123d?view=info |
-
+| Asequibilidad | [SERPAVI, alquileres declarados 2011–2024](https://www.mivau.gob.es/vivienda/alquila-bien-es-tu-derecho/serpavi) | Ministerio de Vivienda |
+| Asequibilidad | [Tarifas del Abono 30 días por zona](https://crtm.es/billetes-y-tarifas/buscador/abono-30-dias/) | CRTM |
+| Desplazamiento | Horarios GTFS (metro, cercanías, EMT, interurbanos) | CRTM |
+| Desplazamiento | [Infraestructura de transporte público](https://datos.comunidad.madrid/catalogos/#/dataset/infraestructura_transporte_publico?view=info) | Catálogo CM |
+| Desplazamiento | Callejero `numeracion_vigente_datos_abiertos` (geocodificación del destino, solo Madrid capital) | Catálogo CM |
+| Sanidad | [Centros, servicios y establecimientos sanitarios](https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_establecimientos_sanitarios?view=info) | Catálogo CM |
+| Sanidad | [Oficinas de farmacia](https://datos.comunidad.madrid/catalogo/dataset/oficinas_farmacia) | Catálogo CM |
+| Educación | [Centros educativos](https://datos.comunidad.madrid/catalogos/#/dataset/centros_educativos?view=info) | Catálogo CM |
+| Cultura | [Centros y servicios bibliotecarios](https://datos.comunidad.madrid/catalogos/#/dataset/centros_servicios_bibliotecarios_dependientes_cm_ayuntamiento_madrid?view=info) | Catálogo CM |
+| Cultura | [Patrimonio cultural protegido](https://datos.gob.es/es/catalogo/a13002908-patrimonio-cultural-protegido-en-la-comunidad-de-madrid) | Catálogo CM |
+| Naturaleza | [Red Natura 2000, ZEPA](https://datos.gob.es/es/catalogo/a13002908-red-natura-2000-zonas-de-especial-proteccion-para-las-aves-zepa_es30) y [LIC/ZEC](https://datos.gob.es/es/catalogo/a13002908-red-natura-2000-lugares-de-importancia-comunitaria-y-zonas-especiales-de-conservacion-lic_es30) | Catálogo CM |
+| Edad de los vecinos | [Residentes por rango de edad](https://datos.gob.es/es/catalogo/a13002908-residentes-en-la-comunidad-de-madrid-por-rango-de-edad1) | Catálogo CM |
+| Accesibilidad PMR | Horarios GTFS, campo de accesibilidad de las paradas | CRTM |
+| Accesibilidad PMR | [Madrid Accesible](https://www.madridaccesible.com/datos), fuente candidata por validar | Por validar |
+| Seguridad (contexto, sin puntuación) | [Delincuencia y victimización en la Comunidad de Madrid](https://datos.gob.es/es/catalogo/ea0040772-delincuencia-y-victimizacion-en-la-comunidad-de-madrid) | datos.gob.es |
+| Base cartográfica | [Municipios de la Comunidad de Madrid](https://datos.gob.es/es/catalogo/a13002908-municipios-de-la-comunidad-de-madrid1) | Catálogo CM |
 
 **Compromiso DATAMAD:** incorporar efectivamente al menos un conjunto de datos del **catálogo oficial de la Comunidad de Madrid**, documentando su uso y transformación. Las fuentes son candidatas y se validarán por fecha, cobertura, licencia y granularidad antes de usarlas en resultados reales.
 
