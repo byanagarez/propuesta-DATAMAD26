@@ -29,26 +29,29 @@ Elegir dónde vivir no depende únicamente del precio del alquiler. También imp
 ```mermaid
 flowchart LR
     A[Perfil y preferencias] --> B[Datos abiertos y cálculos]
-    B --> C[Filtros y puntuaciones]
+    B --> C[Filtros, puntuaciones y frontera]
     C --> D[Tres recomendaciones explicadas]
 ```
 
 ### Datos de entrada y resultados
 
-Cada variable alimenta una puntuación de 0 a 100 por zona. La suma ponderada de las puntuaciones ordena las zonas y da lugar a las tres recomendaciones.
+Cada variable alimenta una puntuación de 0 a 100 por zona. Las tres recomendaciones se eligen entre las zonas no dominadas: aquellas para las que ninguna otra es igual o mejor en todos los criterios y mejor en alguno.
 
 ![Variables y puntuaciones del sistema](assets/variables-puntuaciones.png)
 
 
 La aplicación devuelve:
 
-Tres zonas recomendadas, una por perfil, con su puntuación total y el desglose por criterio.
-El alquiler máximo asumible en cada zona, junto a una referencia histórica: «Con tu salario puedes asumir hasta X €/mes en esta zona. En 2024, la mitad de los alquileres aquí estaba entre A y B € (mediana M).»
-Minutos por trayecto, horas mensuales de transporte y coste del abono.
-Un mapa comparativo de las tres zonas.
+- Tres zonas recomendadas, una por perfil, con sus puntuaciones por criterio.
+- El esfuerzo económico en cada zona, junto a una referencia histórica: «En esta zona, el alquiler mediano y el abono supondrían el N % de tu disponibilidad económica. En 2024, la mitad de los alquileres aquí estaba entre A y B € (mediana M).»
+- Minutos por trayecto, horas mensuales de transporte y coste del abono.
+- Los datos de cada zona, agregados y visualizados junto a la referencia de la Comunidad de Madrid.
+- Un mapa comparativo de las tres zonas.
 
 
-El dato económico por defecto es el salario neto mensual. A partir de él la aplicación calcula el gasto máximo asumible en alquiler y transporte (35 % del salario). Quien prefiera hacer sus propias cuentas (por ejemplo, una pareja que suma dos ingresos) puede saltar este paso e indicar directamente su presupuesto mensual.
+El dato económico es la **disponibilidad económica mensual**\* (salario neto o ingresos totales). Sobre esa cifra la aplicación calcula el esfuerzo económico de cada zona: la parte que supondrían el alquiler mediano y el abono de transporte.
+
+\* Indica el dinero del que dispones al mes, no la cantidad que quieres destinar a la vivienda.
 
 ## Experiencia de usuario prevista
 
@@ -62,14 +65,14 @@ El dato económico por defecto es el salario neto mensual. A partir de él la ap
 flowchart TB
     subgraph S1[01 · TU PERFIL]
       A1[Destino laboral]
-      A2[Salario o presupuesto y tiempo máximo]
+      A2[Disponibilidad económica y tiempo máximo]
       A3[Días presenciales y movilidad]
       A4[Preferencias y necesidades PMR]
     end
     subgraph S2[02 · ANÁLISIS]
       B1[Filtrar zonas viables]
       B2[Calcular costes y tiempos]
-      B3[Calcular puntuaciones]
+      B3[Calcular puntuaciones y frontera]
     end
     subgraph S3[03 · RESULTADOS]
       C1[Opción ahorro]
@@ -80,36 +83,45 @@ flowchart TB
     S1 --> S2 --> S3
 ```
 
-> Las tres opciones son tres repartos de pesos sobre las mismas puntuaciones (ver Metodología). Si dos repartos señalan la misma zona, se muestra la siguiente mejor.
-
-## Metodología: recomendaciones explicables
+> Las tres opciones son tres puntos de la frontera de zonas no dominadas (ver Metodología). Si dos perfiles señalan la misma zona, el segundo muestra la siguiente de la frontera según su criterio.
 
 1. **Integración de datos.** Unificar indicadores de vivienda, transporte y equipamientos a una unidad territorial comparable (municipio o zona, según cobertura).
-2. **Asequibilidad. Se calcula el alquiler máximo asumible en cada zona (gasto máximo menos el abono de transporte de esa zona) y se compara con los alquileres declarados en la zona según SERPAVI: percentil 25, mediana y percentil 75 de 2024, último año disponible. La puntuación vale 0 si el máximo asumible queda por debajo del percentil 25, 50 en la mediana y 100 a partir del percentil 75.
-3. **Desplazamiento. Tiempo de trayecto en transporte público hasta el destino indicado, a partir de los horarios GTFS del CRTM, y horas mensuales según los días presenciales. La puntuación baja de 100 a 0 a medida que el trayecto se acerca al tiempo máximo indicado.
-4. **Filtros previos. Quedan fuera las zonas que superan el tiempo máximo y aquellas cuyo alquiler máximo asumible queda por debajo del percentil 25. Los filtros se aplican antes de puntuar, para que una zona muy lejana no resulte elegida solo por ser barata.
-5. **Preferencias. Cada preferencia marcada genera su propia puntuación de 0 a 100: sanidad, educación, cultura, naturaleza y edad de los vecinos. Para los servicios se usa el número de equipamientos por habitante, convertido en posición percentil entre zonas. Para la edad, el usuario elige un perfil (jóvenes, familias, mayores) y la puntuación refleja el peso de esa franja entre los residentes.
-6. **Puntuación total y tres perfiles. La puntuación total de cada zona es la suma ponderada de sus puntuaciones. Las tres zonas recomendadas responden a tres repartos de pesos:
-   
-   | Perfil | Asequibilidad | Desplazamiento | Preferencias |
-   |---|---|---|---|
-   | Equilibrio | 35 % | 35 % | 30 % |
-   | Ahorro | 55 % | 20 % | 25 % |
-   | Menor desplazamiento | 20 % | 55 % | 25 % |
-   
-El peso de preferencias se reparte a partes iguales entre las que el usuario haya marcado. Si no marca ninguna, ese peso se reparte entre asequibilidad y desplazamiento. Los pesos son provisionales.
+2. **Esfuerzo económico.** Para cada zona se calcula qué parte de la disponibilidad económica mensual supondrían el alquiler mediano de la zona (SERPAVI 2024, último año disponible) y el abono de transporte que le corresponde. Ese porcentaje se convierte en puntuación con una escala lineal por tramos, en la que 100 corresponde al esfuerzo más bajo:
 
-Los pesos expresan cuánto cuenta cada criterio en cada perfil y se muestran junto al resultado.
-   
-Ejemplo ilustrativo (cifras inventadas). Una persona marca sanidad y naturaleza. Para una zona, con el perfil «equilibrio»:
+   | Esfuerzo económico | Puntuación |
+   |---|---|
+   | Hasta el 25 % | 100 |
+   | 75 % | 10 |
+   | 100 % o más | 0 |
 
-| Puntuación | Valor | Peso |
-|---|---|---|
-| Asequibilidad | 72 | 35 % |
-| Desplazamiento | 58 | 35 % |
-| Sanidad | 80 | 15 % |
-| Naturaleza | 40 | 15 % |
-| **Total** | **63,5** | 100 % |
+   Entre esos puntos la puntuación baja de forma lineal: un esfuerzo del 35 % da 82 puntos y uno del 50 %, 55. Los umbrales son provisionales. Se pide la disponibilidad económica y no un presupuesto de vivienda: esta herramienta resuelve el paso anterior a la búsqueda del anuncio, es decir, qué parte de tu disponibilidad económica se llevarían la vivienda y el transporte en cada zona.
+3. **Desplazamiento.** Tiempo de trayecto en transporte público hasta el destino indicado, a partir de los horarios GTFS del CRTM, y horas mensuales según los días presenciales. La puntuación es 100 hasta 15 minutos puerta a puerta y baja de forma lineal hasta 0 en el tiempo máximo indicado. El umbral adapta al transporte público el de la ciudad de los 15 minutos (Moreno et al., 2021), formulado para trayectos a pie o en bicicleta.
+4. **Filtro previo.** Quedan fuera las zonas que superan el tiempo máximo indicado. No hay filtro económico: una zona cara conserva su puntuación baja y su porcentaje de esfuerzo se muestra siempre junto al resultado.
+5. **Preferencias.** Cada preferencia marcada genera su propia puntuación de 0 a 100: sanidad, educación, cultura, naturaleza y edad de los vecinos. Para los servicios se usa el número de equipamientos por habitante, convertido en posición percentil entre zonas. Para la edad, el usuario elige un perfil (jóvenes, familias, mayores) y la puntuación refleja el peso de esa franja entre los residentes. Para comparar zonas, las preferencias marcadas se resumen en su media.
+6. **Frontera y tres perfiles.** Cada zona queda descrita por tres puntuaciones: esfuerzo económico, desplazamiento y preferencias. Se conservan las zonas no dominadas (frontera de Pareto): aquellas para las que ninguna otra es igual o mejor en las tres y mejor en al menos una. Las tres recomendaciones son tres puntos de esa frontera:
+
+   | Perfil | Zona elegida en la frontera | Desempate |
+   |---|---|---|
+   | Ahorro | La de mayor puntuación de esfuerzo económico (el esfuerzo más bajo) | Mayor puntuación de desplazamiento |
+   | Menor desplazamiento | La de mayor puntuación de desplazamiento | Mayor puntuación de esfuerzo económico |
+   | Equilibrio | La más cercana al punto ideal (100 en las tres puntuaciones), por distancia euclídea | Mayor puntuación de esfuerzo económico |
+
+   No se usan pesos: las recomendaciones dependen de la forma de la frontera y no de un reparto fijado de antemano. Si el usuario no marca preferencias, la frontera se calcula con esfuerzo económico y desplazamiento.
+7. **Visualización.** Los datos que explican cada recomendación se agregan por zona y se muestran de forma visual junto a la referencia de la Comunidad de Madrid. El tipo de gráfico se definirá durante el desarrollo.
+
+Ejemplo ilustrativo (cifras inventadas). Cinco zonas dentro del tiempo máximo:
+
+| Zona | Esfuerzo económico | Desplazamiento | Preferencias | Situación | Distancia al ideal |
+|---|---|---|---|---|---|
+| A | 82 | 40 | 55 | Frontera · **Ahorro** | 77,1 |
+| B | 64 | 78 | 60 | Frontera · **Equilibrio** | 58,1 |
+| C | 44 | 100 | 70 | Frontera · **Menor desplazamiento** | 63,5 |
+| D | 60 | 70 | 50 | Dominada por B | n. a. |
+| E | 28 | 100 | 65 | Dominada por C | n. a. |
+
+Las cifras de la tabla son puntuaciones de 0 a 100. D queda fuera porque B la iguala o supera en las tres. E queda fuera porque C tiene el mismo desplazamiento y es mejor en lo demás.
+
+**Referencia.** Moreno, C., Allam, Z., Chabaud, D., Gall, C. y Pratlong, F. (2021). Introducing the «15-Minute City»: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. *Smart Cities*, 4(1), 93–111. https://doi.org/10.3390/smartcities4010006
 
 ### Dos dimensiones de especial interés
 
